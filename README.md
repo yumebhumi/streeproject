@@ -217,27 +217,14 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
 
-## Contact
 
-### Team Links
-<br>
 
-Riya Raj - [Riya Raj](https://linkedin.com/)
-
-Profile Link: [https://github.com/RiyaRaj28](https://github.com/RiyaRaj28)
-<br>
 
 <br>
 
-Imrana Sumbul - [Imrana Sumbul](https://linkedin.com/)
 
-Profile Link:[https://github.com/imranasumbul](https://github.com/imranasumbul)
 
-<br>
 
-Aditi Jogdand - [Aditi Jogdand](https://linkedin.com/)
-
-Profile Link: [https://github.com/ms-solly](https://github.com/ms-solly)
 
 <br>
 <br>
@@ -256,7 +243,7 @@ This is list of resources we found helpful and would like to give credit to. We'
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+<!--[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
 [contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
 [forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
@@ -271,7 +258,7 @@ This is list of resources we found helpful and would like to give credit to. We'
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
 [Node.js]: https://img.shields.io/badge/Node-27B800?style=for-the-badge&logo=node.js&logoColor=white
-[Node-url]: https://nodejs.org
+[Node-url]: https://nodejs.org -->
 
 ## Licence
 
