@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const IncidentSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Reference to the User model
+    ref: 'User',
     required: true,
   },
   location: {
@@ -27,17 +27,21 @@ const IncidentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // name: {
-  //   type: String,
-  //   default: null, 
-  // },
-  // isAnonymous: {
-  //   type: Boolean,
-  //   default: function () {
-  //     return this.name ? false : true; 
-  //   },
-  // },
-});
+  name: {
+    type: String,
+    trim: true,
+    default: '',
+  },
+  isAnonymous: {
+    type: Boolean,
+    default: true,
+  },
+  status: {
+    type: String,
+    enum: ['submitted', 'published', 'rejected'],
+    default: 'submitted',
+  },
+}, { timestamps: true });
 
 IncidentSchema.index({ location: '2dsphere' });
 

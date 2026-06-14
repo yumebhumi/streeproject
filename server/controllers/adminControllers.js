@@ -2,6 +2,8 @@ const User = require('../models/userSchema');
 const Contact = require('../models/contactSchema');
 const Incident = require('../models/incidentSchema');
 
+const INCIDENT_STATUSES = ['submitted', 'published', 'rejected'];
+
 const getAllUsers = async (req, res) => {
     try {
         const users = await User.find({}, {password : 0});
@@ -63,7 +65,7 @@ const deleteUser = async (req, res) => {
 //fetched all incidents data except the user 
 const getAllIncidents = async (req, res) => {
     try {
-        const incidents = await Incident.find().populate('user');;
+        const incidents = await Incident.find().populate('user', 'userName email').sort({ createdAt: -1 });
         if(!incidents) {
             return res.status(404).json({ msg: 'No incidents found.' });
         }
@@ -89,10 +91,23 @@ const getIncidentById = async (req, res) => {
 const updateIncident = async (req, res) => {
     try {
         const id = req.params.id;
-        const updatedIncidentData = req.body; 
+        const { status } = req.body;
 
-        const updatedData= await Incident.updateOne({_id : id}, { $set: updatedIncidentData});
-        return res.status(200).json(updatedData);
+        if (!INCIDENT_STATUSES.includes(status)) {
+            return res.status(400).json({ msg: 'Invalid incident status.' });
+        }
+
+        const updatedIncident = await Incident.findByIdAndUpdate(
+            id,
+            { $set: { status } },
+            { new: true }
+        ).populate('user', 'userName email');
+
+        if (!updatedIncident) {
+            return res.status(404).json({ msg: 'No incident found.' });
+        }
+
+        return res.status(200).json(updatedIncident);
     } catch (error) {
         next(error)
     }

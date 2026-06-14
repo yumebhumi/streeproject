@@ -1,239 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useAuth } from "../store/auth";
-import { MdMyLocation } from "react-icons/md";
+import { MdMyLocation } from 'react-icons/md';
+import { useAuth } from '../store/auth';
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-const IncidentForm = () => {
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('mistreatment');
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const { user, token } = useAuth(); 
-  const [name, setName] = useState('');
-
-  useEffect(() => {
-    if (user) {
-      setName(user.userName); 
-    }
-  }, [user]);
-
-  const detectLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setLatitude(position.coords.latitude);
-      setLongitude(position.coords.longitude);
-    });
-  };
-
-  const setToday = () => {
-    const today = new Date();
-    setDate(today.toISOString().split('T')[0]);
-  };
-
-  const setNow = () => {
-    const now = new Date();
-    setTime(now.toTimeString().split(' ')[0].slice(0, 5));
-  };
-
-  const MapClickHandler = () => {
-    useMapEvents({
-      click: (e) => {
-        setLatitude(e.latlng.lat);
-        setLongitude(e.latlng.lng);
-      },
-    });
-    return null;
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-
-    if (latitude === null || longitude === null) {
-      alert('Please select a valid location on the map.');
-      return;
-    }
-
-    const newIncident = {
-      name,
-      description,
-      category,
-      date,
-      time,
-      location: {
-        type: 'Point',
-        coordinates: [longitude, latitude], 
-      },
-    };
-    
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`, 
-          "Content-Type": "application/json",
-        },
-      };
-      const response = await axios.post(`${backendUrl}/api/incidents/addIncident`, newIncident, config);
-      console.log('Incident saved:', response.data);
-    } catch (error) {
-      console.error('Error saving incident:', error);
-    }
-
-    setDescription('');
-    setCategory('mistreatment');
-    setDate('');
-    setTime('');
-    setLatitude(null);
-    setLongitude(null);
-  };
-
-  return (
-    <div style={containerStyles}>
-      <div style={formContainerStyles} className='bg-white shadow-lg'>
-        <h2 style={{ textAlign: 'center' }} className='text-gray-900 text-xl m-3'>Report an Incident</h2>
-        <form onSubmit={onSubmit} style={formStyles}>
-          <div style={fieldContainer}>
-            <label style={labelStyles}>Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              style={inputStyles}
-              className='bg-gray-800 focus:bg-gray-900 outline-none border border-white focus:border-pink-400'
-            />
-          </div>
-
-          <div style={fieldContainer}>
-            <label style={labelStyles}>Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              style={textareaStyles}
-              className='bg-gray-800 focus:bg-gray-900 outline-none border border-white'
-            />
-          </div>
-
-          <div style={fieldContainer}>
-            <label style={labelStyles}>Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-              style={inputStyles}
-              className='bg-gray-800 focus:bg-gray-900'
-            >
-              <option value="mistreatment">Mistreatment</option>
-              <option value="hooligans">Hooligans</option>
-              <option value="cat-calling">Cat-calling</option>
-              <option value="shady-area">Shady Area</option>
-            </select>
-          </div>
-
-          <div style={fieldContainer}>
-            <label style={labelStyles}>Date</label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                required
-                style={{ ...inputStyles, flex: '1' }}
-                className='bg-gray-800 focus:bg-gray-900'
-              />
-              <button type="button" onClick={setToday} style={smallButtonStyles} className='bg-pink-500'>
-                Today
-              </button>
-            </div>
-          </div>
-
-          <div style={fieldContainer}>
-            <label style={labelStyles}>Time</label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <input
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                required
-                style={{ ...inputStyles, flex: '1' }}
-                className='bg-gray-800 focus:bg-gray-900'
-              />
-              <button type="button" onClick={setNow} style={smallButtonStyles} className='bg-pink-500'>
-                Now
-              </button>
-            </div>
-          </div>
-
-          <div style={fieldContainer}>
-            <label style={labelStyles}>Location</label>
-            <button
-              type="button"
-              onClick={detectLocation}
-              style={buttonStyles}
-              className='bg-pink-500'
-            >
-              Detect My Location <MdMyLocation className='inline-block mx-1 text-xl hover:bg-pink-600'/>
-            </button>
-            <p style={locationTextStyles} className='text-xs m-0 mt-1'>
-              {latitude && longitude
-                ? `Latitude: ${latitude}, Longitude: ${longitude}`
-                : 'Click on the map to set a location'}
-            </p>
-          </div>
-
-          <button
-            type="submit"
-            disabled={!latitude || !longitude}
-            style={submitButtonStyles}
-            className='bg-pink-600'
-          >
-            Submit
-          </button>
-        </form>
-      </div>
-
-      <div style={mapContainerStyles}>
-        <MapContainer
-          center={[29.954880, 76.819534]}
-          zoom={13}
-          style={{ height: '100%', width: '100%' }}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
-          />
-          <MapClickHandler />
-          {latitude && longitude && (
-            <Marker position={[latitude, longitude]}></Marker>
-          )}
-        </MapContainer>
-      </div>
-    </div>
-  );
-};
 
 const containerStyles = {
   display: 'flex',
   flexDirection: 'row',
   paddingTop: '40px',
-  height: '100vh', 
+  minHeight: '100vh',
   width: '100vw',
   position: 'relative',
   zIndex: '1',
 };
 
 const formContainerStyles = {
-  flex: 2, 
+  flex: 2,
   padding: '20px',
   color: '#fff',
 };
 
 const mapContainerStyles = {
-  flex: 5, 
+  flex: 5,
   borderRadius: '8px',
   overflow: 'hidden',
 };
@@ -269,7 +60,7 @@ const smallButtonStyles = {
   color: 'white',
   border: 'none',
   cursor: 'pointer',
-  marginLeft: '10px', 
+  marginLeft: '10px',
 };
 
 const inputStyles = {
@@ -277,7 +68,7 @@ const inputStyles = {
   fontSize: '10px',
   borderRadius: '4px',
   border: '1px solid #ccc',
-  flex: '1', 
+  flex: '1',
 };
 
 const buttonStyles = {
@@ -301,6 +92,241 @@ const submitButtonStyles = {
 const locationTextStyles = {
   fontSize: '12px',
   color: 'grey',
+};
+
+const IncidentForm = () => {
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('mistreatment');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [name, setName] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(true);
+  const [submitMessage, setSubmitMessage] = useState('');
+  const { user, token } = useAuth();
+
+  useEffect(() => {
+    if (user?.userName) {
+      setName(user.userName);
+    }
+  }, [user]);
+
+  const detectLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      setLatitude(position.coords.latitude);
+      setLongitude(position.coords.longitude);
+    });
+  };
+
+  const setToday = () => {
+    const today = new Date();
+    setDate(today.toISOString().split('T')[0]);
+  };
+
+  const setNow = () => {
+    const now = new Date();
+    setTime(now.toTimeString().split(' ')[0].slice(0, 5));
+  };
+
+  const MapClickHandler = () => {
+    useMapEvents({
+      click: (event) => {
+        setLatitude(event.latlng.lat);
+        setLongitude(event.latlng.lng);
+      },
+    });
+
+    return null;
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    setSubmitMessage('');
+
+    if (latitude === null || longitude === null) {
+      alert('Please select a valid location on the map.');
+      return;
+    }
+
+    const newIncident = {
+      name,
+      description,
+      category,
+      date,
+      time,
+      isAnonymous,
+      location: {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      },
+    };
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      };
+
+      await axios.post(`${backendUrl}/api/incidents/addIncident`, newIncident, config);
+      setSubmitMessage('Incident submitted. It will appear on the map after admin review.');
+      setDescription('');
+      setCategory('mistreatment');
+      setDate('');
+      setTime('');
+      setLatitude(null);
+      setLongitude(null);
+      setIsAnonymous(true);
+    } catch (error) {
+      console.error('Error saving incident:', error);
+      setSubmitMessage('Unable to submit incident right now. Please try again.');
+    }
+  };
+
+  return (
+    <div style={containerStyles}>
+      <div style={formContainerStyles} className="bg-white shadow-lg">
+        <h2 style={{ textAlign: 'center' }} className="m-3 text-xl text-gray-900">Report an Incident</h2>
+        <form onSubmit={onSubmit} style={formStyles}>
+          <div style={fieldContainer}>
+            <label style={labelStyles}>Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              disabled={isAnonymous}
+              style={inputStyles}
+              className="border border-white bg-gray-800 outline-none focus:border-pink-400 focus:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+          </div>
+
+          <label className="rounded-md border border-pink-200 bg-pink-50 p-3 text-sm text-gray-700">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={isAnonymous}
+                onChange={(event) => setIsAnonymous(event.target.checked)}
+              />
+              <span>Submit anonymously</span>
+            </div>
+            <p className="mt-2 text-xs text-gray-500">
+              Your report is stored with your account for moderation, but your name will stay hidden when this is enabled.
+            </p>
+          </label>
+
+          <div style={fieldContainer}>
+            <label style={labelStyles}>Description</label>
+            <textarea
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              required
+              style={textareaStyles}
+              className="border border-white bg-gray-800 outline-none focus:bg-gray-900"
+            />
+          </div>
+
+          <div style={fieldContainer}>
+            <label style={labelStyles}>Category</label>
+            <select
+              value={category}
+              onChange={(event) => setCategory(event.target.value)}
+              required
+              style={inputStyles}
+              className="bg-gray-800 focus:bg-gray-900"
+            >
+              <option value="mistreatment">Mistreatment</option>
+              <option value="hooligans">Hooligans</option>
+              <option value="cat-calling">Cat-calling</option>
+              <option value="shady-area">Shady Area</option>
+            </select>
+          </div>
+
+          <div style={fieldContainer}>
+            <label style={labelStyles}>Date</label>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <input
+                type="date"
+                value={date}
+                onChange={(event) => setDate(event.target.value)}
+                required
+                style={{ ...inputStyles, flex: '1' }}
+                className="bg-gray-800 focus:bg-gray-900"
+              />
+              <button type="button" onClick={setToday} style={smallButtonStyles} className="bg-pink-500">
+                Today
+              </button>
+            </div>
+          </div>
+
+          <div style={fieldContainer}>
+            <label style={labelStyles}>Time</label>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <input
+                type="time"
+                value={time}
+                onChange={(event) => setTime(event.target.value)}
+                required
+                style={{ ...inputStyles, flex: '1' }}
+                className="bg-gray-800 focus:bg-gray-900"
+              />
+              <button type="button" onClick={setNow} style={smallButtonStyles} className="bg-pink-500">
+                Now
+              </button>
+            </div>
+          </div>
+
+          <div style={fieldContainer}>
+            <label style={labelStyles}>Location</label>
+            <button
+              type="button"
+              onClick={detectLocation}
+              style={buttonStyles}
+              className="bg-pink-500"
+            >
+              Detect My Location <MdMyLocation className="mx-1 inline-block text-xl hover:bg-pink-600" />
+            </button>
+            <p style={locationTextStyles} className="m-0 mt-1 text-xs">
+              {latitude && longitude
+                ? `Latitude: ${latitude}, Longitude: ${longitude}`
+                : 'Click on the map to set a location'}
+            </p>
+          </div>
+
+          {submitMessage ? (
+            <p className={`rounded-md p-3 text-sm ${submitMessage.startsWith('Incident submitted') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+              {submitMessage}
+            </p>
+          ) : null}
+
+          <button
+            type="submit"
+            disabled={!latitude || !longitude}
+            style={submitButtonStyles}
+            className="bg-pink-600 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+
+      <div style={mapContainerStyles}>
+        <MapContainer
+          center={[29.95488, 76.819534]}
+          zoom={13}
+          style={{ height: '100%', width: '100%' }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
+          />
+          <MapClickHandler />
+          {latitude && longitude ? <Marker position={[latitude, longitude]} /> : null}
+        </MapContainer>
+      </div>
+    </div>
+  );
 };
 
 export default IncidentForm;
