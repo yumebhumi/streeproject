@@ -1,0 +1,402 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ *
+ * App shell (from the original index.css)
+ * ------------------------------------------------------------------ */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-container > main {
+  flex-grow: 1;
+}
+
+header {
+  flex-shrink: 0;
+}
+
+footer {
+  flex-shrink: 0;
+}
+
+.content {
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: rgb(236 72 153);
+}
+
+/* ------------------------------------------------------------------ *
+ * Map page (map.css)
+ * ------------------------------------------------------------------ */
+.map-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  padding-top: 60px;
+  padding-bottom: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.map-title {
+  padding-top: 12px;
+  text-align: center;
+  font-size: 40px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 60px;
+  background-color: #ff69b4;
+  z-index: 100;
+}
+
+.map-content {
+  flex: 1;
+  border: 1px solid #ccc;
+}
+
+.map-controls {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.incident-details {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ *
+ * Admin layout (adminlayout.css)
+ * ------------------------------------------------------------------ */
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  margin: 0 1.5rem;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+  color: #fff;
+  background-color: magenta;
+  text-align: center;
+  width: 150px;
+}
+
+nav ul li a svg {
+  margin-right: 0.5rem;
+  font-size: 1.8rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.username-column {
+  width: 120px;
+}
+
+.category-column {
+  width: 80px;
+}
+
+.description-column {
+  width: 300px;
+}
+
+.date-column {
+  width: 120px;
+}
+
+.time-column {
+  width: 80px;
+}
+
+.location-column {
+  width: 80px;
+}
+
+.update-column,
+.delete-column {
+  width: 130px;
+}
+
+.edit-delete {
+  width: 150px;
+  background-color: magenta;
+}
+
+/* ------------------------------------------------------------------ *
+ * Admin tables (adminUsers.css)
+ * ------------------------------------------------------------------ */
+.admin-users-section {
+  background-color: #1a1a1a;
+  padding: 2rem 0;
+}
+
+.admin-users {
+  max-width: 80%;
+  margin: 0 auto;
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 7px 29px 0px;
+}
+
+.admin-users h1 {
+  color: #fff;
+  text-align: left;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+thead th {
+  background-color: #333;
+  color: #fff;
+  padding: 1rem;
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+
+tbody tr {
+  border-bottom: 1px solid #444;
+}
+
+tbody td {
+  padding: 1rem;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.admin-users-section button,
+.edit-user-section button,
+.edit-incident-section button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  background-color: #a83279;
+  cursor: pointer;
+}
+
+.admin-users-section button:hover,
+.edit-user-section button:hover,
+.edit-incident-section button:hover {
+  background-color: #922d6e;
+}
+
+/* ------------------------------------------------------------------ *
+ * Edit forms (editUser.css)
+ * ------------------------------------------------------------------ */
+.edit-user-section,
+.edit-incident-section {
+  padding: 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-user-section .container,
+.edit-incident-section .container {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.edit-user-section h2,
+.edit-incident-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.edit-user-section form,
+.edit-incident-section form {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-user-section label,
+.edit-incident-section label {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #555;
+}
+
+.edit-user-section input,
+.edit-user-section select,
+.edit-user-section textarea,
+.edit-incident-section input,
+.edit-incident-section select,
+.edit-incident-section textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.edit-user-section input:focus,
+.edit-incident-section input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.edit-user-section button[type="submit"],
+.edit-incident-section button[type="submit"] {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-user-section button[type="submit"]:hover,
+.edit-incident-section button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* ------------------------------------------------------------------ *
+ * User profile (userprofile.css)
+ * ------------------------------------------------------------------ */
+.user-profile {
+  max-width: 80%;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.user-profile h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+
+.profile-info {
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  background-color: pink;
+  height: 300px;
+}
+
+.profile-image {
+  flex-shrink: 0;
+  margin-right: 20px;
+  text-align: center;
+}
+
+.profile-image img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+}
+
+.profile-details p {
+  margin: 5px 0;
+  font-size: 1.5rem;
+  color: #555;
+}
+
+.profile-details strong {
+  color: #333;
+}
+
+.incidents-list {
+  margin-top: 30px;
+}
+
+.incidents-list h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.incidents {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 15px;
+  width: 95%;
+}
+
+.incidents h3 {
+  margin: 0 0 10px;
+  color: #ee47a3;
+  font-size: 20px;
+  text-align: center;
+}
+
+.incidents p {
+  padding: 5px;
+  margin: 0 0 10px;
+  color: #e6b2d2;
+  text-align: center;
+}
+
+.incidents small {
+  text-align: center;
+  color: #999;
+  font-size: 15px;
+}
+
+.grid-two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
