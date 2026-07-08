@@ -2,113 +2,119 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { IoMenu } from "react-icons/io5";
-import { RxCrossCircled } from "react-icons/rx";
+import { usePathname } from "next/navigation";
+import { FiMenu, FiX } from "react-icons/fi";
+import { FaShieldAlt } from "react-icons/fa";
 import { useAuth } from "@/store/auth";
+import Logo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
 
-function Header() {
-  const [isOpen, setIsOpen] = useState(false);
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/map", label: "Map" },
+  { href: "/resources", label: "Resources" },
+  { href: "/helpline", label: "Help" },
+];
+
+export default function Header() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const { isLoggedIn, LogoutUser } = useAuth();
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
   return (
-    <nav className="bg-gray-800 text-white fixed w-full z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <h1 className="text-2xl font-bold">
-              <Link href="/">Stree</Link>
-            </h1>
-          </div>
-          <div className="flex items-center">
-            <div className="hidden md:flex space-x-4">
-              <Link href="/" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                Home
-              </Link>
-              <Link href="/resources" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                Resources
-              </Link>
-              <Link href="/helpline" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                Helpline
-              </Link>
-              <Link href="/incident-form" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                Report Incident
-              </Link>
-              <Link href="/user-profile" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                User Profile
-              </Link>
-              <Link href="/contact-us" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                Contact us
-              </Link>
-              {isLoggedIn ? (
-                <Link href="/login" onClick={LogoutUser} className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                  Logout
-                </Link>
-              ) : (
-                <>
-                  <Link href="/register" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                    Register
-                  </Link>
-                  <Link href="/login" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                    Login
-                  </Link>
-                </>
-              )}
-            </div>
-            <div className="md:hidden">
-              <button
-                onClick={toggleMenu}
-                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+    <header className="sticky top-0 z-50 border-b border-ink/5 bg-cream/85 backdrop-blur-md dark:border-white/10 dark:bg-[#171826]/85">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
+        <Logo />
+
+        <nav className="hidden items-center gap-8 md:flex">
+          {navLinks.map(({ href, label }) => {
+            const active = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="relative text-sm font-medium text-ink-soft transition-colors hover:text-ink dark:text-white/70 dark:hover:text-white"
               >
-                {isOpen ? (
-                  <RxCrossCircled className="block h-6 w-6" aria-hidden="true" />
-                ) : (
-                  <IoMenu className="block h-6 w-6" aria-hidden="true" />
+                <span className={active ? "text-ink dark:text-white" : ""}>{label}</span>
+                {active && (
+                  <span className="absolute -bottom-[21px] left-0 h-0.5 w-full rounded-full bg-coral" />
                 )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Mobile menu */}
-      {isOpen && (
-        <div className="md:hidden bg-gray-800 max-h-64 overflow-y-auto ">
-          <div className="px-2 pt-2 pb-3 sm:pb-20 space-y-1 sm:px-3">
-            <Link href="/" className="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">
-              Home
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
+          {isLoggedIn ? (
+            <Link
+              href="/login"
+              onClick={LogoutUser}
+              className="hidden rounded-xl border border-ink/15 px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink/5 dark:border-white/20 dark:text-white dark:hover:bg-white/10 sm:inline-block"
+            >
+              Logout
             </Link>
-            <Link href="/register" className="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">
-              Register
-            </Link>
-            <Link href="/login" className="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">
+          ) : (
+            <Link
+              href="/login"
+              className="hidden rounded-xl border border-ink/15 px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink/5 dark:border-white/20 dark:text-white dark:hover:bg-white/10 sm:inline-block"
+            >
               Login
             </Link>
-            <Link href="/resources" className="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">
-              Resources
-            </Link>
-            <Link href="/helpline" className="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">
-              Helpline
-            </Link>
-            <Link href="/incident-form" className="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">
-              Report Incident
-            </Link>
-            <Link href="/map" className="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">
-              Map
-            </Link>
-            <Link href="/about-us" className="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">
-              About us
-            </Link>
-            <Link href="/contact-us" className="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">
-              Contact us
-            </Link>
-          </div>
+          )}
+          <Link
+            href="/incident-form"
+            className="hidden items-center gap-2 rounded-xl bg-coral px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-coral/30 transition-colors hover:bg-coral-dark sm:inline-flex"
+          >
+            <FaShieldAlt size={13} />
+            Report Incident
+          </Link>
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle menu"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-coral-light/60 dark:text-white dark:hover:bg-white/10 md:hidden"
+          >
+            {open ? <FiX size={20} /> : <FiMenu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div className="border-t border-ink/5 bg-cream px-5 py-4 dark:border-white/10 dark:bg-[#171826] md:hidden">
+          <nav className="flex flex-col gap-1">
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setOpen(false)}
+                className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft hover:bg-coral-light/50 hover:text-ink dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white"
+              >
+                {label}
+              </Link>
+            ))}
+            <div className="mt-3 flex gap-2">
+              <Link
+                href="/login"
+                onClick={() => {
+                  if (isLoggedIn) LogoutUser();
+                  setOpen(false);
+                }}
+                className="flex-1 rounded-xl border border-ink/15 px-4 py-2 text-center text-sm font-semibold text-ink dark:border-white/20 dark:text-white"
+              >
+                {isLoggedIn ? "Logout" : "Login"}
+              </Link>
+              <Link
+                href="/incident-form"
+                onClick={() => setOpen(false)}
+                className="flex-1 rounded-xl bg-coral px-4 py-2 text-center text-sm font-semibold text-white"
+              >
+                Report Incident
+              </Link>
+            </div>
+          </nav>
         </div>
       )}
-    </nav>
+    </header>
   );
 }
-
-export default Header;

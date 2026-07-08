@@ -3,36 +3,46 @@
 @tailwind utilities;
 
 /* ------------------------------------------------------------------ *
- * App shell (from the original index.css)
+ * Base theme tokens (light + dark)
  * ------------------------------------------------------------------ */
+:root {
+  --bg: #fffbf8;
+  --bg-alt: #fdf3ee;
+  --text: #262a40;
+}
+
+.dark {
+  --bg: #171826;
+  --bg-alt: #1f2133;
+  --text: #ecebf3;
+}
+
 html,
 body {
-  height: 100%;
   margin: 0;
+  min-height: 100%;
 }
 
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.app-container > main {
-  flex-grow: 1;
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-poppins), system-ui, sans-serif;
 }
 
-header {
-  flex-shrink: 0;
-}
-
-footer {
-  flex-shrink: 0;
-}
-
-.content {
-  flex-grow: 1;
-  overflow-y: auto;
-  background-color: rgb(236 72 153);
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ------------------------------------------------------------------ *
